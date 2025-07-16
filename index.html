@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geheimschrift ↔ Normaal</title>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #000;
+      --box: #fff;
+    }
+    body.dark {
+      --bg: #121212;
+      --text: #fff;
+      --box: #1e1e1e;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      max-width: 800px;
+      margin-inline: auto;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-size: 1rem;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: var(--box);
+      color: var(--text);
+      resize: vertical;
+    }
+
+    select, button, input {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    select {
+      background: #e0e0e0;
+    }
+
+    button {
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    #output {
+      margin-top: 20px;
+      background: var(--box);
+      color: var(--text);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      min-height: 50px;
+      white-space: pre-wrap;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle {
+      background: #444;
+    }
+
+    #login {
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      button, select {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="login">
+    <h2>🔐 Toegang vereist</h2>
+    <p>Voer wachtwoord in:</p>
+    <input type="password" id="wachtwoord" placeholder="Wachtwoord...">
+    <button onclick="controleerWachtwoord()">Inloggen</button>
+  </div>
+
+  <div id="app" style="display: none;">
+    <h2>🔏 Geheimschrift ↔ Normaal</h2>
+
+    <div class="controls">
+      <select id="direction">
+        <option value="encode">→ Naar Geheimschrift</option>
+        <option value="decode">← Naar Normale Tekst</option>
+      </select>
+      <button onclick="kopieerOutput()">📋 Kopieer</button>
+      <button onclick="voorlezen()">🔊 Voorlezen</button>
+      <button onclick="spreekIn()">🎙 Inspreken</button>
+      <button class="toggle" onclick="toggleDarkMode()">🌙 Donker</button>
+    </div>
+
+    <textarea id="input" placeholder="Typ of spreek hier..."></textarea>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const juistWachtwoord = "K"; // Hoofdletter K
+
+    function controleerWachtwoord() {
+      const invoer = document.getElementById("wachtwoord").value;
+      if (invoer === juistWachtwoord) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("app").style.display = "block";
+      } else {
+        alert("Onjuist wachtwoord.");
+      }
+    }
+
+    const cipher = {
+      'a': 'e', 'b': 'r', 'c': 'x', 'd': 'w', 'e': 'a',
+      'f': 'l', 'g': 't', 'h': 's', 'i': 'y', 'j': 'q',
+      'k': 'p', 'l': 'f', 'm': 'n', 'n': 'm', 'o': 'u',
+      'p': 'k', 'q': 'j', 'r': 'b', 's': 'h', 't': 'g',
+      'u': 'o', 'v': 'z', 'w': 'd', 'x': 'c', 'y': 'i', 'z': 'v'
+    };
+
+    const reverseCipher = Object.fromEntries(Object.entries(cipher).map(([k, v]) => [v, k]));
+
+    const inputField = document.getElementById('input');
+    const outputDiv = document.getElementById('output');
+    const directionSelect = document.getElementById('direction');
+
+    inputField.addEventListener('input', vertaal);
+    directionSelect.addEventListener('change', vertaal);
+
+    function vertaal() {
+      const text = inputField.value;
+      const direction = directionSelect.value;
+      const map = direction === 'encode' ? cipher : reverseCipher;
+      let result = '';
+
+      for (let char of text) {
+        const lower = char.toLowerCase();
+        const isUpper = char !== lower;
+        const translated = map[lower] || char;
+        result += isUpper ? translated.toUpperCase() : translated;
+      }
+
+      outputDiv.innerText = result;
+    }
+
+    function kopieerOutput() {
+      navigator.clipboard.writeText(outputDiv.innerText).then(() => {
+        alert("✅ Gekopieerd!");
+      });
+    }
+
+    function voorlezen() {
+      const tekst = outputDiv.innerText;
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(tekst);
+      utter.lang = "nl-NL";
+      synth.cancel();
+      synth.speak(utter);
+    }
+
+    function spreekIn() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("🎙 Spraakherkenning wordt niet ondersteund.");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "nl-NL";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        inputField.value = transcript;
+        vertaal();
+      };
+
+      recognition.onerror = function() {
+        alert("⚠️ Fout bij spraakherkenning.");
+      };
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+</body>
+</html>
