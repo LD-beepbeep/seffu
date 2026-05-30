@@ -10,31 +10,33 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: radial-gradient(circle at top, #f7f8fc 0%, #eef1fb 45%, #e7edff 100%);
-      --surface: rgba(255, 255, 255, 0.82);
-      --surface-strong: rgba(255, 255, 255, 0.94);
-      --surface-border: rgba(120, 127, 157, 0.18);
-      --text: #0f172a;
-      --muted: #5f6b85;
-      --accent: #0a84ff;
-      --accent-soft: rgba(10, 132, 255, 0.14);
-      --danger: #ff453a;
-      --shadow: 0 22px 52px rgba(17, 24, 39, 0.14);
-      --focus: 0 0 0 3px color-mix(in oklab, var(--accent) 35%, transparent);
+      --bg: #f2f2f7;
+      --surface: rgba(255, 255, 255, 0.78);
+      --surface-strong: rgba(255, 255, 255, 0.95);
+      --surface-muted: rgba(247, 247, 252, 0.9);
+      --surface-border: rgba(60, 60, 67, 0.16);
+      --text: #101828;
+      --muted: #667085;
+      --accent: #007aff;
+      --accent-soft: rgba(0, 122, 255, 0.12);
+      --danger: #ff3b30;
+      --shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
+      --focus: 0 0 0 3px color-mix(in oklab, var(--accent) 34%, transparent);
     }
 
     body.dark {
       color-scheme: dark;
-      --bg: radial-gradient(circle at top, #1f2335 0%, #15192a 54%, #0b0f1d 100%);
-      --surface: rgba(24, 29, 48, 0.72);
-      --surface-strong: rgba(24, 29, 48, 0.88);
-      --surface-border: rgba(153, 164, 205, 0.18);
-      --text: #f5f8ff;
-      --muted: #a4b0d2;
+      --bg: #0b0d13;
+      --surface: rgba(19, 24, 36, 0.78);
+      --surface-strong: rgba(24, 30, 45, 0.94);
+      --surface-muted: rgba(20, 26, 40, 0.92);
+      --surface-border: rgba(168, 179, 219, 0.2);
+      --text: #f8fafc;
+      --muted: #a2acc6;
       --accent: #4da3ff;
-      --accent-soft: rgba(77, 163, 255, 0.2);
+      --accent-soft: rgba(77, 163, 255, 0.18);
       --danger: #ff6961;
-      --shadow: 0 26px 65px rgba(2, 6, 23, 0.62);
+      --shadow: 0 28px 70px rgba(2, 6, 23, 0.7);
     }
 
     * { box-sizing: border-box; }
@@ -45,121 +47,122 @@
       font-family: "SF Pro Text", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
-      transition: background 0.35s ease, color 0.35s ease;
+      transition: background .3s ease, color .3s ease;
     }
 
     body {
       display: flex;
       justify-content: center;
-      padding: clamp(12px, 3vw, 28px);
+      padding: clamp(10px, 4vw, 34px);
     }
+
+    h1, h2, h3, p { margin: 0; }
 
     .phone-shell {
       width: min(460px, 100%);
-      border-radius: 36px;
+      border-radius: 34px;
       background: var(--surface);
       border: 1px solid var(--surface-border);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       overflow: hidden;
     }
 
-    .safe-top {
+    .safe-top,
+    .safe-bottom {
       height: max(8px, env(safe-area-inset-top));
       background: transparent;
     }
 
-    .safe-bottom {
-      height: max(8px, env(safe-area-inset-bottom));
-      background: transparent;
-    }
+    .safe-bottom { height: max(8px, env(safe-area-inset-bottom)); }
 
-    .screen {
-      padding: 18px;
-    }
-
-    h1, h2, h3, p { margin: 0; }
+    .screen { padding: 16px; }
+    #app { display: none; }
 
     .hero {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .hero-left {
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
     }
 
     .app-dot {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 11px;
-      background: linear-gradient(165deg, #67c4ff 0%, #0077ff 55%, #0050d8 100%);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 18px rgba(10, 80, 190, 0.32);
+      background: linear-gradient(165deg, #4ea4ff, #006dff 58%, #0050d8);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.42), 0 10px 18px rgba(0, 90, 210, 0.32);
+      color: #fff;
       display: grid;
       place-items: center;
-      color: #fff;
       flex: 0 0 auto;
     }
 
-    .app-dot svg {
-      width: 18px;
-      height: 18px;
+    .app-dot svg { width: 18px; height: 18px; }
+
+    .hero h1 {
+      font-size: 1.03rem;
+      letter-spacing: .01em;
     }
 
     .hero p {
-      margin-top: 3px;
-      font-size: .85rem;
+      margin-top: 2px;
       color: var(--muted);
+      font-size: .78rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
     }
 
-    .toolbar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
+    .stack {
+      display: grid;
+      gap: 10px;
     }
 
     .card {
       border: 1px solid var(--surface-border);
-      border-radius: 20px;
+      border-radius: 22px;
       background: var(--surface-strong);
-      padding: 14px;
-      margin-bottom: 12px;
+      padding: 12px;
     }
 
     .segmented {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 8px;
-      border-radius: 15px;
-      background: color-mix(in oklab, var(--surface-strong) 78%, #cfd5ea 22%);
+      gap: 7px;
+      padding: 5px;
+      border-radius: 14px;
       margin-bottom: 10px;
+      background: var(--surface-muted);
+      border: 1px solid color-mix(in oklab, var(--surface-border) 72%, transparent);
     }
 
     .segment {
       border: 1px solid transparent;
-      border-radius: 12px;
+      border-radius: 11px;
       padding: 9px 10px;
-      text-align: center;
-      font-size: .88rem;
+      background: transparent;
+      font-size: .84rem;
       font-weight: 600;
       color: var(--muted);
-      background: transparent;
       cursor: pointer;
-      transition: .2s ease;
+      transition: .18s ease;
     }
 
     .segment.active {
       color: var(--text);
-      border-color: color-mix(in oklab, var(--accent) 35%, transparent);
-      background: color-mix(in oklab, var(--accent) 20%, var(--surface-strong));
+      border-color: color-mix(in oklab, var(--accent) 34%, transparent);
+      background: color-mix(in oklab, var(--accent) 16%, var(--surface-strong));
     }
 
     .meta-row {
@@ -168,124 +171,140 @@
       align-items: center;
       gap: 8px;
       color: var(--muted);
-      font-size: .82rem;
+      font-size: .78rem;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
 
-    textarea {
+    textarea,
+    .output,
+    input[type="password"] {
       width: 100%;
-      border: 1px solid var(--surface-border);
       border-radius: 14px;
-      min-height: 132px;
-      resize: vertical;
-      background: color-mix(in oklab, var(--surface-strong) 86%, #aeb8da 14%);
+      border: 1px solid var(--surface-border);
+      background: var(--surface-muted);
       color: var(--text);
       padding: 12px;
-      font-size: .97rem;
+      font-size: .95rem;
+      line-height: 1.45;
       font-family: inherit;
-      line-height: 1.44;
       outline: none;
     }
 
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
     .output {
-      width: 100%;
-      border: 1px solid var(--surface-border);
-      border-radius: 14px;
-      min-height: 132px;
-      background: color-mix(in oklab, var(--surface-strong) 87%, #aeb8da 13%);
-      padding: 12px;
-      line-height: 1.45;
+      min-height: 140px;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
-    .output.placeholder {
-      color: var(--muted);
-    }
+    .output.placeholder { color: var(--muted); }
 
-    button, .chip {
+    button, .chip, .toggle {
       border-radius: 12px;
       border: 1px solid transparent;
       padding: 9px 12px;
-      font-size: .9rem;
       font-family: inherit;
+      font-size: .86rem;
+      font-weight: 500;
       color: var(--text);
-      background: color-mix(in oklab, var(--surface-strong) 82%, #bec8eb 18%);
+      background: var(--surface-muted);
       cursor: pointer;
       display: inline-flex;
-      gap: 7px;
       align-items: center;
+      justify-content: center;
+      gap: 7px;
       transition: transform .12s ease, border-color .2s ease, background .2s ease;
     }
 
-    button:hover, .chip:hover { transform: translateY(-1px); }
-    button:focus-visible, textarea:focus-visible, input:focus-visible { outline: none; box-shadow: var(--focus); }
+    button:hover, .chip:hover, .toggle:hover { transform: translateY(-1px); }
+    button:focus-visible, textarea:focus-visible, input:focus-visible, .toggle:focus-within { outline: none; box-shadow: var(--focus); }
 
     button.primary {
       background: var(--accent);
       color: #fff;
       border-color: transparent;
+      font-weight: 600;
     }
 
     button.soft {
       background: var(--accent-soft);
-      border-color: color-mix(in oklab, var(--accent) 38%, transparent);
+      border-color: color-mix(in oklab, var(--accent) 36%, transparent);
     }
 
     button.warn {
       color: var(--danger);
-      border-color: color-mix(in oklab, var(--danger) 35%, transparent);
-    }
-
-    button svg {
-      width: 14px;
-      height: 14px;
+      border-color: color-mix(in oklab, var(--danger) 34%, transparent);
     }
 
     .row {
       display: flex;
       gap: 8px;
+      margin-top: 10px;
       flex-wrap: wrap;
-      margin-top: 10px;
     }
 
-    .row > * {
-      flex: 1 1 auto;
-      justify-content: center;
-    }
+    .row > * { flex: 1 1 140px; }
 
-    .status {
-      margin-top: 10px;
-      min-height: 20px;
-      font-size: .85rem;
-      color: var(--muted);
-    }
-
-    .settings {
+    .action-scroll {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      align-items: center;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+
+    .action-scroll > * {
+      flex: 0 0 auto;
+      min-width: 126px;
     }
 
     .toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--surface-border);
-      background: color-mix(in oklab, var(--surface-strong) 84%, #bec8eb 16%);
-      font-size: .86rem;
       color: var(--muted);
-      cursor: pointer;
+      border-color: var(--surface-border);
+      justify-content: flex-start;
+      min-width: 160px;
     }
 
     .toggle input { accent-color: var(--accent); }
 
-    .history-wrap {
-      margin-top: 6px;
+    .more-actions {
+      margin-top: 10px;
+      border: 1px solid var(--surface-border);
+      border-radius: 14px;
+      background: color-mix(in oklab, var(--surface-muted) 88%, transparent);
+      overflow: hidden;
     }
+
+    .more-actions summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      font-size: .82rem;
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .more-actions summary::-webkit-details-marker { display: none; }
+    .more-actions summary::after { content: "⌄"; transition: transform .2s ease; }
+    .more-actions[open] summary::after { transform: rotate(180deg); }
+    .more-actions .actions-body { padding: 0 10px 10px; display: grid; gap: 8px; }
+
+    .status {
+      margin-top: 10px;
+      min-height: 20px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .history-wrap { margin-top: 2px; }
 
     .history-row {
       display: flex;
@@ -297,7 +316,7 @@
 
     .chip {
       white-space: nowrap;
-      font-size: .8rem;
+      font-size: .78rem;
       color: var(--muted);
     }
 
@@ -308,55 +327,40 @@
 
     #historyEmpty {
       color: var(--muted);
-      font-size: .84rem;
-      margin-top: 2px;
+      font-size: .82rem;
+      margin-top: 4px;
     }
 
-    #app { display: none; }
-
     .login-card {
-      padding-top: 26px;
-      padding-bottom: 22px;
+      padding-top: 22px;
+      padding-bottom: 20px;
     }
 
     .login-heading {
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .login-heading h2 {
-      margin-bottom: 5px;
-    }
+    .login-heading h2 { margin-bottom: 5px; font-size: 1.18rem; }
 
     .login-heading p {
       color: var(--muted);
-      font-size: .9rem;
-    }
-
-    input[type="password"] {
-      width: 100%;
-      border: 1px solid var(--surface-border);
-      border-radius: 14px;
-      padding: 12px;
-      font-size: .95rem;
-      background: color-mix(in oklab, var(--surface-strong) 88%, #aeb8da 12%);
-      color: var(--text);
-      outline: none;
-      margin-bottom: 10px;
+      font-size: .88rem;
     }
 
     #loginStatus {
       min-height: 20px;
       margin-top: 8px;
       color: var(--danger);
-      font-size: .86rem;
+      font-size: .84rem;
       text-align: center;
     }
 
     @media (max-width: 430px) {
-      .phone-shell { border-radius: 26px; }
-      .screen { padding: 14px; }
-      .hero h1 { font-size: 1.1rem; }
+      .phone-shell { border-radius: 24px; }
+      .screen { padding: 13px; }
+      .hero p { max-width: 180px; }
+      .action-scroll > * { min-width: 118px; }
     }
   </style>
 </head>
@@ -374,7 +378,7 @@
       <div id="loginStatus" aria-live="polite"></div>
     </div>
 
-    <div id="app" class="screen">
+    <div id="app" class="screen stack">
       <header class="hero">
         <div class="hero-left">
           <div class="app-dot" aria-hidden="true">
@@ -382,7 +386,7 @@
           </div>
           <div>
             <h1>Seffu Translator</h1>
-            <p>Snel, strak en mobiel-vriendelijk.</p>
+            <p>Minimalistische vertaler, ontworpen voor focus.</p>
           </div>
         </div>
         <button id="themeBtn" class="soft" type="button" onclick="toggleDarkMode()">Thema</button>
@@ -406,11 +410,16 @@
           <button id="swapBtn" type="button" onclick="wisselRichting()">Wissel richting</button>
         </div>
 
-        <div class="settings" style="margin-top:10px;">
-          <label class="toggle" for="livePreview"><input id="livePreview" type="checkbox" checked /> Live preview</label>
-          <button type="button" onclick="plakUitClipboard()">Plakken</button>
-          <button id="installBtn" type="button" style="display:none;" onclick="installeerApp()">Installeer app</button>
-        </div>
+        <details class="more-actions">
+          <summary>Meer invoeropties</summary>
+          <div class="actions-body">
+            <label class="toggle" for="livePreview"><input id="livePreview" type="checkbox" checked /> Live preview</label>
+            <div class="action-scroll">
+              <button type="button" onclick="plakUitClipboard()">Plakken</button>
+              <button id="installBtn" type="button" style="display:none;" onclick="installeerApp()">Installeer app</button>
+            </div>
+          </div>
+        </details>
       </section>
 
       <section class="card">
@@ -421,17 +430,22 @@
 
         <div id="output" class="output placeholder">Je vertaling verschijnt hier.</div>
 
-        <div class="row">
+        <div class="action-scroll" style="margin-top:10px;">
           <button type="button" onclick="voorlezen()">Voorlezen</button>
           <button type="button" onclick="spreekIn()">Inspreken</button>
           <button type="button" onclick="deelOutput()">Delen</button>
         </div>
 
-        <div class="row">
-          <button type="button" class="warn" onclick="maakLeeg()">Leegmaken</button>
-          <button id="undoBtn" type="button" onclick="herstelLaatste()" disabled>Ongedaan maken</button>
-          <button type="button" onclick="downloadOutput()">Download .txt</button>
-        </div>
+        <details class="more-actions">
+          <summary>Meer outputopties</summary>
+          <div class="actions-body">
+            <div class="action-scroll">
+              <button type="button" class="warn" onclick="maakLeeg()">Leegmaken</button>
+              <button id="undoBtn" type="button" onclick="herstelLaatste()" disabled>Ongedaan maken</button>
+              <button type="button" onclick="downloadOutput()">Download .txt</button>
+            </div>
+          </div>
+        </details>
 
         <div id="status" class="status" aria-live="polite"></div>
       </section>
