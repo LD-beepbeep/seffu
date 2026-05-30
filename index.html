@@ -3,217 +3,519 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geheimschrift ↔ Normaal</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <title>Seffu Translator</title>
   <style>
     :root {
-      --bg: #f9f9f9;
-      --text: #000;
-      --box: #fff;
+      color-scheme: light dark;
+      --bg: linear-gradient(145deg, #f8fafc 0%, #eef2ff 45%, #e0f2fe 100%);
+      --card: rgba(255, 255, 255, 0.86);
+      --card-border: rgba(255, 255, 255, 0.65);
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.14);
+      --danger: #dc2626;
+      --shadow: 0 22px 55px rgba(15, 23, 42, 0.12);
     }
+
     body.dark {
-      --bg: #121212;
-      --text: #fff;
-      --box: #1e1e1e;
+      --bg: radial-gradient(circle at top, #1e293b 0%, #0b1120 60%, #020617 100%);
+      --card: rgba(15, 23, 42, 0.78);
+      --card-border: rgba(148, 163, 184, 0.22);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.18);
+      --danger: #f87171;
+      --shadow: 0 28px 65px rgba(2, 6, 23, 0.7);
     }
+
+    * { box-sizing: border-box; }
 
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      margin: 0;
-      padding: 20px;
-      max-width: 800px;
-      margin-inline: auto;
-      transition: background 0.3s, color 0.3s;
+      display: flex;
+      justify-content: center;
+      padding: 28px 18px;
+      transition: background 0.35s ease, color 0.35s ease;
     }
 
-    h2 {
-      text-align: center;
+    .screen {
+      width: min(920px, 100%);
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: clamp(1rem, 2.8vw, 2rem);
+    }
+
+    h1, h2, p { margin: 0; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand svg, .login-title svg {
+      width: 24px;
+      height: 24px;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .panel {
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      background: color-mix(in oklab, var(--card) 90%, transparent);
+      padding: 14px;
+    }
+
+    .control-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, button, input, textarea {
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-size: 0.96rem;
+      font-family: inherit;
+      color: var(--text);
+      background: color-mix(in oklab, var(--card) 88%, #cbd5e1 12%);
+    }
+
+    button {
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+      border-color: color-mix(in oklab, var(--accent) 20%, transparent);
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    button.soft {
+      background: var(--accent-soft);
+      border-color: color-mix(in oklab, var(--accent) 35%, transparent);
+    }
+
+    button.warn {
+      border-color: color-mix(in oklab, var(--danger) 40%, transparent);
+      color: var(--danger);
+    }
+
+    button svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+
+    select, input {
+      padding: 10px 12px;
     }
 
     textarea {
       width: 100%;
-      height: 100px;
-      font-size: 1rem;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      background: var(--box);
-      color: var(--text);
+      min-height: 130px;
+      border: 1px solid var(--card-border);
+      padding: 14px;
       resize: vertical;
+      margin-top: 12px;
+      outline: none;
     }
 
-    select, button, input {
-      padding: 10px 15px;
-      margin: 5px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      box-sizing: border-box;
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 30%, transparent);
     }
 
-    select {
-      background: #e0e0e0;
-    }
-
-    button {
-      background: #007BFF;
-      color: white;
-      cursor: pointer;
-    }
-
-    #output {
-      margin-top: 20px;
-      background: var(--box);
-      color: var(--text);
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      min-height: 50px;
-      white-space: pre-wrap;
-    }
-
-    .controls {
+    .label-row {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 8px;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
     }
 
-    .toggle {
-      background: #444;
+    .output {
+      min-height: 130px;
+      white-space: pre-wrap;
+      border: 1px dashed color-mix(in oklab, var(--accent) 35%, transparent);
+      border-radius: 12px;
+      padding: 14px;
+      background: color-mix(in oklab, var(--card) 82%, transparent);
+      line-height: 1.45;
     }
+
+    .meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .switch input { accent-color: var(--accent); }
+
+    #app { display: none; }
 
     #login {
-      text-align: center;
-      margin-top: 100px;
+      max-width: 420px;
+      width: 100%;
     }
 
-    @media (max-width: 600px) {
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      button, select {
-        width: 100%;
-        margin: 5px 0;
-      }
+    .login-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    #login button { width: 100%; margin-top: 12px; justify-content: center; }
+    #login input { width: 100%; margin-top: 12px; }
+    #loginStatus { margin-top: 10px; color: var(--danger); min-height: 20px; font-size: 0.9rem; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .screen { padding: 16px; border-radius: 20px; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .control-wrap > * { width: 100%; }
+      .switch { margin-left: 0; }
+      .actions button { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
-  <div id="login">
-    <h2>🔐 Toegang vereist</h2>
-    <p>Voer wachtwoord in:</p>
-    <input type="password" id="wachtwoord" placeholder="Wachtwoord...">
-    <button onclick="controleerWachtwoord()">Inloggen</button>
+  <div id="login" class="screen">
+    <div class="login-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 11V7a5 5 0 1 0-10 0v4"/><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M12 14v4"/></svg>
+      <h2>Toegang vereist</h2>
+    </div>
+    <p class="subtitle">Voer het wachtwoord in om de vertaler te openen.</p>
+    <input type="password" id="wachtwoord" placeholder="Wachtwoord..." />
+    <button class="primary" onclick="controleerWachtwoord()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16"/><path d="m13 5 7 7-7 7"/></svg>
+      Inloggen
+    </button>
+    <div id="loginStatus" aria-live="polite"></div>
   </div>
 
-  <div id="app" style="display: none;">
-    <h2>🔏 Geheimschrift ↔ Normaal</h2>
-
-    <div class="controls">
-      <select id="direction">
-        <option value="encode">→ Naar Geheimschrift</option>
-        <option value="decode">← Naar Normale Tekst</option>
-      </select>
-      <button onclick="kopieerOutput()">📋 Kopieer</button>
-      <button onclick="voorlezen()">🔊 Voorlezen</button>
-      <button onclick="spreekIn()">🎙 Inspreken</button>
-      <button class="toggle" onclick="toggleDarkMode()">🌙 Donker</button>
+  <div id="app" class="screen">
+    <div class="header">
+      <div>
+        <div class="brand">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 4H3v16h18z"/><path d="m7 9 2 2-2 2"/><path d="M11 13h6"/></svg>
+          <h1>Seffu Translator</h1>
+        </div>
+        <p class="subtitle">Apple-achtige vertaalervaring met live preview, snelle acties en PWA-support.</p>
+      </div>
+      <button id="themeBtn" class="soft" type="button" onclick="toggleDarkMode()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3c0 .33-.02.66-.02 1a7 7 0 0 0 7 7c.34 0 .67-.02 1-.06z"/></svg>
+        Thema
+      </button>
     </div>
 
-    <textarea id="input" placeholder="Typ of spreek hier..."></textarea>
-    <div id="output"></div>
+    <div class="tool-row">
+      <div class="panel">
+        <div class="control-wrap">
+          <select id="direction" aria-label="Vertaalrichting">
+            <option value="encode">Naar Geheimschrift</option>
+            <option value="decode">Naar Normale Tekst</option>
+          </select>
+          <button id="swapBtn" type="button" class="soft" onclick="wisselRichting()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7h11"/><path d="m13 3 4 4-4 4"/><path d="M17 17H6"/><path d="m10 13-4 4 4 4"/></svg>
+            Wissel
+          </button>
+          <button id="translateBtn" type="button" class="primary" onclick="vertaal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 8 2-3 2 3"/><path d="M4 11h6"/><path d="M7 5v14"/><path d="m13 16 4-10 4 10"/><path d="M14 13h6"/></svg>
+            Vertaal
+          </button>
+          <label class="switch" for="livePreview">
+            <input id="livePreview" type="checkbox" checked />
+            Live preview
+          </label>
+        </div>
+        <textarea id="input" placeholder="Typ of spreek je tekst hier..."></textarea>
+        <div class="actions">
+          <button type="button" onclick="kopieerInput()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
+            Kopieer input
+          </button>
+          <button type="button" class="warn" onclick="maakLeeg()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            Leegmaken
+          </button>
+          <button type="button" onclick="spreekIn()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg>
+            Inspreken
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="label-row">
+          <strong>Live vertaalpreview</strong>
+          <button type="button" onclick="kopieerOutput()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
+            Kopieer output
+          </button>
+        </div>
+        <div id="output" class="output"></div>
+        <div class="meta">
+          <span id="statsInput">Input: 0 tekens</span>
+          <span id="statsOutput">Output: 0 tekens</span>
+        </div>
+        <div class="actions">
+          <button type="button" onclick="voorlezen()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/></svg>
+            Voorlezen
+          </button>
+          <button type="button" class="soft" onclick="downloadOutput()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            Download .txt
+          </button>
+        </div>
+        <div id="status" class="status" aria-live="polite"></div>
+      </div>
+    </div>
   </div>
 
   <script>
-    const juistWachtwoord = "K"; // Hoofdletter K
-
-    function controleerWachtwoord() {
-      const invoer = document.getElementById("wachtwoord").value;
-      if (invoer === juistWachtwoord) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("app").style.display = "block";
-      } else {
-        alert("Onjuist wachtwoord.");
-      }
-    }
+    const juistWachtwoord = "K";
 
     const cipher = {
-      'a': 'e', 'b': 'r', 'c': 'x', 'd': 'w', 'e': 'a',
-      'f': 'l', 'g': 't', 'h': 's', 'i': 'y', 'j': 'q',
-      'k': 'p', 'l': 'f', 'm': 'n', 'n': 'm', 'o': 'u',
-      'p': 'k', 'q': 'j', 'r': 'b', 's': 'h', 't': 'g',
-      'u': 'o', 'v': 'z', 'w': 'd', 'x': 'c', 'y': 'i', 'z': 'v'
+      a: "e", b: "r", c: "x", d: "w", e: "a",
+      f: "l", g: "t", h: "s", i: "y", j: "q",
+      k: "p", l: "f", m: "n", n: "m", o: "u",
+      p: "k", q: "j", r: "b", s: "h", t: "g",
+      u: "o", v: "z", w: "d", x: "c", y: "i", z: "v"
     };
 
     const reverseCipher = Object.fromEntries(Object.entries(cipher).map(([k, v]) => [v, k]));
 
-    const inputField = document.getElementById('input');
-    const outputDiv = document.getElementById('output');
-    const directionSelect = document.getElementById('direction');
+    const inputField = document.getElementById("input");
+    const outputDiv = document.getElementById("output");
+    const directionSelect = document.getElementById("direction");
+    const livePreview = document.getElementById("livePreview");
+    const statsInput = document.getElementById("statsInput");
+    const statsOutput = document.getElementById("statsOutput");
+    const statusMessage = document.getElementById("status");
+    const loginStatus = document.getElementById("loginStatus");
 
-    inputField.addEventListener('input', vertaal);
-    directionSelect.addEventListener('change', vertaal);
-
-    function vertaal() {
-      const text = inputField.value;
-      const direction = directionSelect.value;
-      const map = direction === 'encode' ? cipher : reverseCipher;
-      let result = '';
-
-      for (let char of text) {
-        const lower = char.toLowerCase();
-        const isUpper = char !== lower;
-        const translated = map[lower] || char;
-        result += isUpper ? translated.toUpperCase() : translated;
+    function controleerWachtwoord() {
+      const invoer = document.getElementById("wachtwoord").value;
+      if (invoer === juistWachtwoord) {
+        loginStatus.textContent = "";
+        document.getElementById("login").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        zetStatus("Klaar om te vertalen.");
+        vertaal();
+      } else {
+        loginStatus.textContent = "Onjuist wachtwoord.";
       }
+    }
 
+    function zetStatus(tekst, isFout = false) {
+      statusMessage.textContent = tekst;
+      statusMessage.style.color = isFout ? "var(--danger)" : "var(--muted)";
+    }
+
+    function translateText(text, direction) {
+      const map = direction === "encode" ? cipher : reverseCipher;
+      let result = "";
+      for (const char of text) {
+        const lower = char.toLowerCase();
+        const translated = map[lower] || char;
+        result += char === lower ? translated : translated.toUpperCase();
+      }
+      return result;
+    }
+
+    function updateStats(inputText, outputText) {
+      statsInput.textContent = `Input: ${inputText.length} tekens`;
+      statsOutput.textContent = `Output: ${outputText.length} tekens`;
+    }
+
+    function vertaal(force = false) {
+      if (!force && !livePreview.checked) {
+        return;
+      }
+      const text = inputField.value;
+      const result = translateText(text, directionSelect.value);
       outputDiv.innerText = result;
+      updateStats(text, result);
+      zetStatus(result ? "Vertaling bijgewerkt." : "Voer tekst in om te starten.");
+    }
+
+    function kopieerInput() {
+      kopieerTekst(inputField.value, "Input gekopieerd.");
     }
 
     function kopieerOutput() {
-      navigator.clipboard.writeText(outputDiv.innerText).then(() => {
-        alert("✅ Gekopieerd!");
-      });
+      kopieerTekst(outputDiv.innerText, "Output gekopieerd.");
+    }
+
+    function kopieerTekst(tekst, succesMelding) {
+      if (!tekst) {
+        zetStatus("Er is geen tekst om te kopiëren.", true);
+        return;
+      }
+      navigator.clipboard.writeText(tekst)
+        .then(() => zetStatus(succesMelding))
+        .catch(() => zetStatus("Kopiëren mislukt in deze browsercontext.", true));
     }
 
     function voorlezen() {
-      const tekst = outputDiv.innerText;
+      const tekst = outputDiv.innerText.trim();
+      if (!tekst) {
+        zetStatus("Geen output om voor te lezen.", true);
+        return;
+      }
       const synth = window.speechSynthesis;
       const utter = new SpeechSynthesisUtterance(tekst);
       utter.lang = "nl-NL";
       synth.cancel();
       synth.speak(utter);
+      zetStatus("Output wordt voorgelezen.");
     }
 
     function spreekIn() {
-      if (!('webkitSpeechRecognition' in window)) {
-        alert("🎙 Spraakherkenning wordt niet ondersteund.");
+      if (!("webkitSpeechRecognition" in window)) {
+        zetStatus("Spraakherkenning is niet beschikbaar in deze browser.", true);
         return;
       }
-
       const recognition = new webkitSpeechRecognition();
       recognition.lang = "nl-NL";
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
-
       recognition.start();
 
-      recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        inputField.value = transcript;
-        vertaal();
+      zetStatus("Luisteren... spreek je zin in.");
+
+      recognition.onresult = (event) => {
+        inputField.value = event.results[0][0].transcript;
+        vertaal(true);
       };
 
-      recognition.onerror = function() {
-        alert("⚠️ Fout bij spraakherkenning.");
+      recognition.onerror = () => {
+        zetStatus("Fout bij spraakherkenning.", true);
       };
+    }
+
+    function maakLeeg() {
+      inputField.value = "";
+      outputDiv.innerText = "";
+      updateStats("", "");
+      zetStatus("Input en output gewist.");
+      inputField.focus();
+    }
+
+    function wisselRichting() {
+      directionSelect.value = directionSelect.value === "encode" ? "decode" : "encode";
+      vertaal(true);
+    }
+
+    function downloadOutput() {
+      const text = outputDiv.innerText;
+      if (!text) {
+        zetStatus("Geen output om te downloaden.", true);
+        return;
+      }
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "seffu-output.txt";
+      link.click();
+      URL.revokeObjectURL(url);
+      zetStatus("Output gedownload als .txt bestand.");
     }
 
     function toggleDarkMode() {
       document.body.classList.toggle("dark");
+    }
+
+    inputField.addEventListener("input", () => vertaal());
+    directionSelect.addEventListener("change", () => vertaal(true));
+    livePreview.addEventListener("change", () => {
+      zetStatus(livePreview.checked ? "Live preview ingeschakeld." : "Live preview uitgeschakeld. Gebruik Vertaal.");
+      if (livePreview.checked) {
+        vertaal(true);
+      }
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {
+          zetStatus("PWA offline ondersteuning kon niet worden geladen.", true);
+        });
+      });
     }
   </script>
 </body>
