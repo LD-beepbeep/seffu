@@ -4,10 +4,10 @@
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#f2f2f7",
+  "theme_color": "#f2f2f7",
   "lang": "nl",
-  "description": "Vertaal snel tussen normale tekst en geheimschrift, met live preview en offline PWA-ondersteuning.",
+  "description": "Strakke, mobiele vertaalervaring tussen normale tekst en geheimschrift met slimme snelacties en offline PWA-ondersteuning.",
   "icons": [
     {
       "src": "icons/icon-192.svg",
